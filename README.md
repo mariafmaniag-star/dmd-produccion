@@ -1,6 +1,6 @@
 # DMD Perú · Control de Producción
 
-Portal independiente del CRM comercial. Esta versión es una demostración de la operación de obra y usa únicamente datos ficticios marcados como **DEMO**.
+Portal independiente del CRM comercial. Esta versión de revisión inicia sin datos precargados: permite registrar proyectos y bitácoras de prueba en el navegador, sin mezclar información con el portal comercial.
 
 Incluye:
 
