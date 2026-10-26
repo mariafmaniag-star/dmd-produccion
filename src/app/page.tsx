@@ -1,2 +1,2 @@
-import { ProductionReviewApp } from '@/components/production-review-app';
-export default function Page(){ return <ProductionReviewApp />; }
+import { ProductionAppV2 } from '@/components/production-app-v2';
+export default function Page(){ return <ProductionAppV2 />; }
