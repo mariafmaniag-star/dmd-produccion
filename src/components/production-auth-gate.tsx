@@ -18,15 +18,25 @@ export function ProductionAuthGate() {
   useEffect(() => {
     if (!supabase) return;
     let active = true;
+    // Supabase puts `type=recovery` in the URL when the user arrives from a
+    // password-reset email.  `getSession()` can resolve before the recovery
+    // event listener, so keep the recovery form visible whenever that marker
+    // is present instead of routing a valid temporary session into the app.
+    const recoveryParams = new URLSearchParams(window.location.hash.replace(/^#/, ""));
+    const isRecoveryLink = recoveryParams.get("type") === "recovery" || new URLSearchParams(window.location.search).get("type") === "recovery";
+    if (isRecoveryLink) {
+      setScreen("recovery");
+      setMessage("Crea una contraseña nueva para acceder al portal.");
+    }
     supabase.auth.getSession().then(({ data }) => {
-      if (active) setScreen(data.session ? "app" : "login");
+      if (active && !isRecoveryLink) setScreen(data.session ? "app" : "login");
     });
     const { data: listener } = supabase.auth.onAuthStateChange((event, session) => {
       if (!active) return;
       if (event === "PASSWORD_RECOVERY") {
         setScreen("recovery");
         setMessage("Crea una contraseña nueva para acceder al portal.");
-      } else if (session) setScreen("app");
+      } else if (session && !isRecoveryLink) setScreen("app");
       else setScreen("login");
     });
     return () => { active = false; listener.subscription.unsubscribe(); };
