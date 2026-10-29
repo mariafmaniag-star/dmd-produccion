@@ -33,6 +33,12 @@ async function centralAttachment(id:string,file:File):Promise<Attachment>{
  if(error)throw error;
  return {id,name:file.name,type:file.type||"Archivo",size:file.size,addedAt:new Date().toISOString().slice(0,10),path};
 }
+export async function saveAttachment(file:File):Promise<Attachment>{
+ const id=crypto.randomUUID();
+ if(hasSupabaseConfig)return centralAttachment(id,file);
+ await putFile(id,file);
+ return {id,name:file.name,type:file.type||"Archivo",size:file.size,addedAt:new Date().toISOString().slice(0,10)};
+}
 
 export function AttachmentPicker({attachments,onChange,label="Adjuntar archivos"}:{attachments:Attachment[];onChange:(items:Attachment[])=>void;label?:string}){
  const input=useRef<HTMLInputElement>(null),[busy,setBusy]=useState(false),[message,setMessage]=useState("");
@@ -40,7 +46,7 @@ export function AttachmentPicker({attachments,onChange,label="Adjuntar archivos"
   if(!files?.length)return;
   setBusy(true);setMessage("");
   try{
-   const newItems=await Promise.all(Array.from(files).map(async file=>{const id=crypto.randomUUID();if(hasSupabaseConfig)return centralAttachment(id,file);await putFile(id,file);return {id,name:file.name,type:file.type||"Archivo",size:file.size,addedAt:new Date().toISOString().slice(0,10)};}));
+   const newItems=await Promise.all(Array.from(files).map(saveAttachment));
    onChange([...attachments,...newItems]);
   }catch{setMessage("No pudimos guardar ese archivo. Revisa tu conexión e inténtalo de nuevo.");}
   finally{setBusy(false);if(input.current)input.current.value="";}
