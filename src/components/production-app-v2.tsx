@@ -12,7 +12,7 @@ type Log={id:string;date:string;projectId:string;phase:string;progress:number;co
 type Resource={id:string;projectId:string;kind:string;name:string;planned:number;available:number;note:string;attachments:Attachment[]};
 type Material={id:string;projectId:string;name:string;stock:number;minimum:number;unit:string;note:string;attachments:Attachment[]};
 type Quality={id:string;projectId:string;kind:string;description:string;status:string;note:string;attachments:Attachment[]};
-type Service={id:string;code:string;site:string;serviceType:string;receivedAt:string;stage:number;owner:string;budget:number;collection:string;notes:string;events?:unknown[];costs?:unknown[];documents?:Attachment[];payments?:unknown[];[key:string]:unknown};
+type Service={id:string;code:string;site:string;serviceType:string;workDescription?:string;receivedAt:string;scheduledFor?:string;stage:number;budget:number;collection:string;notes:string;events?:unknown[];costs?:unknown[];documents?:Attachment[];payments?:unknown[];[key:string]:unknown};
 type State={projects?:Project[];logs?:Log[];services?:Service[];resources?:Resource[];materials?:Material[];quality?:Quality[]};
 type ProjectDraft=Omit<Project,"id">;
 const key="dmd-production-review:v2",oldKey="dmd-production-review:v1",today=()=>new Date().toISOString().slice(0,10);
